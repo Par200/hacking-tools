@@ -165,5 +165,64 @@ ${.getClass().getClassLoader()}
 
 Freemarker (Java) Detection List
 
+${7*7}               → 49
+#{7*7}               → 49 (alternative syntax)
+${.version}          → Shows Freemarker version number
+${.now}              → Shows current date/time
+${.main}             → Shows main configuration object
+${.data_model}       → Shows data model passed to template
+${.locale}           → Shows current locale
+${.template}         → Shows template name
+${.output_encoding}  → Shows output encoding
+${.url_escaping_charset} → Shows URL escaping charset
+${.time_zone}        → Shows time zone
+${.current_template_name} → Shows current template name
+${1?string.sequence} → 1, 2, 3, 4, 5 (number sequence)
+${1?string.currency} → $1.00 (currency format)
+${1?string.percent}  → 100% (percent format)
+${.lang}             → Shows language code
+${.locale}           → Shows full locale
+${.number_format}    → Shows number format
+${.boolean_format}   → Shows boolean format
+${.date_format}      → Shows date format
+${.time_format}      → Shows time format
+${.datetime_format}  → Shows datetime format
+${.template_config}  → Shows template configuration
+${.template_config.getTemplateUpdateDelay()} → Update delay
+${.template_config.getTemplateLoader()} → Template loader
+${.template_config.getObjectWrapper()} → Object wrapper
+${.template_config.getLocale()} → Default locale
+${.template_config.getTimeZone()} → Default time zone
+${.template_config.getNumberFormat()} → Default number format
+${.template_config.getBooleanFormat()} → Default boolean format
+${.template_config.getDateFormat()} → Default date format
+${.template_config.getTimeFormat()} → Default time format
+${.template_config.getDateTimeFormat()} → Default datetime format
+${.template_config.getOutputEncoding()} → Output encoding
+${.template_config.getURLEscapingCharset()} → URL escaping
+${.template_config.getWhitespaceStripping()} → Boolean
+${.template_config.getCacheStorage()} → Cache storage
+${.template_config.getTemplateLookupStrategy()} → Lookup strategy
+${.template_config.getTemplateNameFormat()} → Name format
+${.template_config.getAPIBuiltinEnabled()} → API enabled
+${.template_config.getIncompatibleImprovements()} → Version
+${statics['java.lang.System'].getProperty('os.name')} → OS name
+${statics['java.lang.System'].getProperty('user.home')} → User home
+${statics['java.lang.System'].getProperty('java.version')} → Java version
+${statics['java.lang.System'].getenv('PATH')} → PATH variable
+${statics['java.lang.Runtime'].getRuntime().availableProcessors()} → CPU cores
+${.globals}          → Shows global variables
+${.vars}             → Shows all variables
+${.namespace}        → Shows current namespace
+${.current_template_name} → Current template name
+${.template_name}    → Template name
+${.template_src}     → Template source
+${.template_encoding} → Template encoding
+${.template_exists('index')?string('yes','no')} → Template exists
+${.getTemplate('index')} → Loads template
+${.getResource('index')} → Loads resource
+${.getClass().getResource('/')} → Class resource root
+${.getClass().getClassLoader()} → Class loader
+
 
 
